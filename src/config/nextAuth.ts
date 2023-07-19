@@ -41,8 +41,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    // signIn: "/auth/register",
-    // signOut: "/auth/signout",
+    signIn: "/sign-in",
   },
   providers: [
     Credentials({
