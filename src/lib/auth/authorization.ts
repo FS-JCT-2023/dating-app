@@ -1,6 +1,6 @@
 import { prisma } from "@/db/prismaClient";
 import { User, Role } from "@prisma/client";
-import { comparePassword } from "./passwords-utils";
+import { comparePassword } from "@/lib/auth/password-utils";
 
 export type Credentials = Pick<User, "email"> & { password: string } & Pick<User, "role">;
 

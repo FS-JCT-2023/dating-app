@@ -5,6 +5,7 @@ import { prisma } from "@/db/prismaClient";
 import { env } from "@/env.mjs";
 import { getAuthorizedUser, Credentials as AuthorizationCredentials } from "@/lib/auth/authorization";
 
+
 export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),
