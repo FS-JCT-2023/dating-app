@@ -1,34 +1,86 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Dating App CRM
 
-## Getting Started
+A centralized app for all your clients, dates, and appointments.
 
-First, run the development server:
+### about the architecture
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+This app is a mono-ripo using app dir [Next.js 13.4](https://www.nextjs.org).
+It uses [Typescript](https://www.typescriptlang.org/) and [Tailwind CSS](https://www.tailwindcss.com/) for styling.
+these are the main used in the app the additional libraries are listed below.
+
+### about the libraries
+
+* It uses [Mysql](https://dev.mysql.com/doc/) database.
+* It uses [Prisma](https://www.prisma.io/) as an ORM.
+* It uses [NextAuth](https://www.next-auth.js.org/) for authentication and authorization.
+* It uses [React Hook Form](https://www.react-hook-form.com/) for form handling.
+* It uses [Zod](https://www.npmjs.com/package/zod) for validation.
+* It uses [Shedcon UI](https://ui.shadcn.com/) for styling.
+* It uses [Docker](https://www.docker.com/) for containerization.
+* It uses [Docker Compose](https://www.docker.com/compose) for local development.
+* It uses [ESLint](https://www.eslint.org/) for linting.
+* It uses [Prettier](https://www.prettier.io/) for code formatting.
+
+### getting started
+
+Make sure you have on your machine:
+
+* <input type="checkbox" checked> [Node.js](https://nodejs.org/en/)
+* <input type="checkbox" checked> [Git](https://git-scm.com/)
+* <input type="checkbox">  [Docker](https://www.docker.com/)
+* <input type="checkbox"> [Docker Compose](https://docs.docker.com/compose/install/)
+
+**Make sure you  don't have any app running on ports: 3306, 8080, 3000.** 
+
+And then, rin the following commands
+
+1. Clone the repo <code>git clone ghttps://github.com/FS-JCT-2023/dating-app.git</code>.
+
+2. Change directory <code>cd dating-app</code>.
+
+3. Install dependencies <code>npm install</code>.
+
+4. Get docker containers up and running <code>docker-compose up -d</code>.
+
+5. Migrate the database with <code>npx prisma migrate dev</code> and <code>npx prisma db push</code>.
+
+5. Run the app<code>npm run dev</code>.
+
+6. Open your browser http://localhost:3000
+
+7. Stop the containers (if you wanna) <code>docker-compose down</code>.
+
+
+#### bonus
+Seed your local database with fake user to play with. Run <code>npx prisma db seed</code>.
+And login as admin at http://localhost:3000/sign-in/admin with the following credentials:
+* email: shmuelbisberg@gmail.com
+* password: password
+
+### Analyzing & Manipulating with Adminer
+This app runs on a container. It's already running if you followed the steps above.
+
+Go to http://localhost:8080/ and login with the following credentials:
+* user: root
+* password: password
+
+There you can see, and CRUD the database.
+
+
+### Fetch components from [shedcon/ui](https://ui.shadcn.com/)
+
+Browse the  [shedcon/ui](https://ui.shadcn.com/docs/components/) website and copy the component you want to use.
+
+There you'll see the commend's you'll need to run to install the component.
+
+after installation, the component will be available at <code>/components/ui</code> directory.
+
+**note! file imports are with <code>"@/*"</code> aliases**
+
+for example:
+```typescript
+import { Button } from "@/components/ui/button";
+// do stuff...
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

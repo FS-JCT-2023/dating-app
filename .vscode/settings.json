@@ -13,5 +13,8 @@
       "database": "app",
       "username": "root"
     }
+  ],
+  "cSpell.words": [
+    "Adminer"
   ]
 }
