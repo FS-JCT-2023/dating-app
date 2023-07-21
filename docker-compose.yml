@@ -7,8 +7,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
       MYSQL_DATABASE: "${MYSQL_DATABASE:-app}"
-      MYSQL_USER: "${MYSQL_USER:-user}" 
+      MYSQL_USER: "${MYSQL_USER:-user}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD:-root}"
+    networks:
+      - db
+      - default
     ports:
       - "3306:3306"
     volumes:
@@ -22,4 +25,11 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - db
+    links:
+      - db
 
+networks:
+  db:
+    driver: bridge
