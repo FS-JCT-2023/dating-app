@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { usePopper } from "@/providers/popper";
 
 export default function MatchmakerSignIn() {
   const {
@@ -29,6 +30,8 @@ export default function MatchmakerSignIn() {
     resolver: zodResolver(signInSchema),
   });
 
+  const { pop } = usePopper();
+
   const { push } = useRouter();
 
   const onClick = handleSubmit(async (data) => {
@@ -39,7 +42,11 @@ export default function MatchmakerSignIn() {
     });
     console.log(res);
     if (res?.error) {
-      // TODO show error
+      pop({
+        type: "error",
+        headline: "Failed to signing in",
+        message: "Please check your email and password and try again.",
+      })
       reset();
     } else {
       // TODO redirect to client space
@@ -69,7 +76,7 @@ export default function MatchmakerSignIn() {
           </div>
           <div className="space-y-1">
             <Label htmlFor="password">Password</Label>
-            <Input {...register("password")} id="password" type="password" />
+            <Input {...register("password")} autoComplete="password" id="password" type="password" />
             {errors.password?.message && (
               <Label htmlFor="email" className="text-xs text-red-600">
                 {errors.password?.message.toString()}

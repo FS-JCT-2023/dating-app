@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { usePopper } from "@/providers/popper";
 
 export default function ClientSignIn() {
   const {
@@ -29,6 +30,8 @@ export default function ClientSignIn() {
     resolver: zodResolver(signInSchema),
   });
 
+  const { pop } = usePopper();
+
   const { push } = useRouter();
 
   const onClick = handleSubmit(async (data) => {
@@ -39,7 +42,11 @@ export default function ClientSignIn() {
     });
     console.log(res);
     if (res?.error) {
-      // TODO show error
+      pop({
+        type: "error",
+        headline: "Failed to signing in",
+        message: "Please check your email and password and try again.",
+      })
       reset();
     } else {
       // TODO redirect to client space

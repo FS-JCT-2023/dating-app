@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Providers } from "@/providers/providers";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
@@ -18,9 +19,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} min-h-screen`}>
         <div className="bg-transparent">
-          {children}
+          <Providers>{children}</Providers>
         </div>
-        </body>
+      </body>
     </html>
   );
 }
