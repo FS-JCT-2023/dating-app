@@ -15,9 +15,9 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { signInSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod"
+import z from "zod";
 
-export default function ClientSignIn() {
+export default function MatchmakerSignIn() {
   const {
     register,
     handleSubmit,
@@ -34,7 +34,7 @@ export default function ClientSignIn() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Client Sign-In</CardTitle>
+        <CardTitle>Matchmaker Sign-In</CardTitle>
         <CardDescription>
           Enter your email and password and then, click the sign-in button to
           sign-in.
@@ -64,7 +64,7 @@ export default function ClientSignIn() {
         <CardContent>
           <Button type="submit">Sign in</Button>
         </CardContent>
-        <input type="hidden" value="CLIENT" {...register("role")} />
+        <input type="hidden" value="MATCHMAKER" {...register("role")} />
         <CardFooter>
           <p className="text-sm text-center mx-auto opacity-85">
             If you don{"'"}t have an account,{" "}
