@@ -16,19 +16,35 @@ import { useForm } from "react-hook-form";
 import { signInSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function MatchmakerSignIn() {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
   });
 
-  const onClick = handleSubmit((data) => {
-    console.log("data");
-    console.log(data);
+  const { push } = useRouter();
+
+  const onClick = handleSubmit(async (data) => {
+    const res = await signIn("credentials", {
+      ...data,
+      callbackUrl: "/",
+      redirect: false,
+    });
+    console.log(res);
+    if (res?.error) {
+      // TODO show error
+      reset();
+    } else {
+      // TODO redirect to client space
+      push("/");
+    }
   });
 
   return (
