@@ -41,6 +41,14 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
 enum Role {
     CLIENT
     MATCHMAKER
@@ -66,14 +74,6 @@ model User {
     client     Client?
     matchmaker Matchmaker?
     admin      Admin?
-}
-
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
 }
 
 enum ClientCategory {
@@ -150,6 +150,8 @@ model Option {
     question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId  String
     description String?
+
+    answers Answer[]
 }
 
 model Answer {
@@ -159,6 +161,9 @@ model Answer {
 
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId String
+
+    option   Option? @relation(fields: [optionId], references: [id], onDelete: Cascade)
+    optionId String?
 
     user   Client @relation(fields: [userId], references: [userId], onDelete: Cascade)
     userId String

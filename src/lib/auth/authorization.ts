@@ -39,7 +39,7 @@ export function isAuthorizedByRolePolicy(role: Role, match: Role): boolean {
     case "MATCHMAKER":
       return role === "MATCHMAKER" || role === "ADMIN";
     case "CLIENT":
-      return role === "CLIENT" || role === "ADMIN";
+      return role === "CLIENT" || role === "ADMIN" || role === "MATCHMAKER";
     default:
       return false;
   }
