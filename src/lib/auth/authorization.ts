@@ -1,6 +1,8 @@
 import { prisma } from "@/db/prismaClient";
 import { User, Role } from "@prisma/client";
 import { comparePassword } from "@/lib/auth/password-utils";
+import { getServerSession as nextAuthGetServerSession, type Session } from 'next-auth';
+import { authOptions } from '@/config/nextAuth';
 
 export type Credentials = Pick<User, "email"> & { password: string } & Pick<User, "role">;
 
@@ -44,3 +46,8 @@ export function isAuthorizedByRolePolicy(role: Role, match: Role): boolean {
       return false;
   }
 }
+
+// get user session if exist
+export async function getServerSession(): Promise<Session | null> {
+  return await nextAuthGetServerSession(authOptions)
+} 
