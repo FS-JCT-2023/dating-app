@@ -59,7 +59,7 @@ model User {
     id            String    @id @default(cuid())
     role          Role      @default(CLIENT)
     isBaned       Boolean   @default(false)
-    bannedReason  String?
+    bannedReason  String?   @db.Text
     firstName     String
     lastName      String
     email         String    @unique
@@ -95,8 +95,9 @@ model Client {
     birthday DateTime
     category ClientCategory
     gender   Gender
-    aboutMe  String?
+    aboutMe  String?        @db.Text
     photoUrl String?
+    isDating Boolean        @default(false)
 
     reports  Report[]
     answers  Answer[]
@@ -130,6 +131,8 @@ enum QuestionType {
     RELIGION
     LIFESTYLE
     BACKGROUND
+    OTHER
+    LOOKINS_FOR
 }
 
 model Question {
@@ -137,8 +140,8 @@ model Question {
     updated_at DateTime @updatedAt
 
     id          String       @id @default(cuid())
-    text        String
-    description String?
+    text        String       @db.Text
+    description String?      @db.Text
     type        QuestionType
     options     Option[]
     answers     Answer[]
@@ -146,10 +149,10 @@ model Question {
 
 model Option {
     id          String   @id @default(cuid())
-    text        String
+    text        String  @db.Text
     question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId  String
-    description String?
+    description String? @db.Text
 
     answers Answer[]
 }
@@ -157,7 +160,7 @@ model Option {
 model Answer {
     id         String   @id @default(cuid())
     created_at DateTime @default(now())
-    text       String?
+    text       String? @db.Text
 
     question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
     questionId String
@@ -201,6 +204,9 @@ model Match {
     created_at DateTime    @default(now())
     status     MatchStatus
 
+    startedAt DateTime  @default(now()) @db.DateTime(3)
+    endedAt   DateTime?
+
     client1   Client @relation(name: "Match_client1", fields: [client1Id], references: [userId], onDelete: Cascade)
     client1Id String
 
@@ -217,8 +223,9 @@ model MatchDiery {
     id         String    @id @default(cuid())
     created_at DateTime  @default(now())
     headline   String
-    text       String
+    text       String @db.Text
     appendAt   DateTime?
+    place      String?
 
     match   Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
     matchId String
