@@ -1,29 +1,41 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { utapi } from "uploadthing/server";
+import { getServerSession } from "@/lib/auth/authorization"
+import { prisma } from "@/db/prismaClient";
+
+const maxFileCount = 1;
+const maxFileSize = "4MB";
+
+export const profileImageEndpoint = "profileImage" 
 
 const f = createUploadthing();
-
-const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({ image: { maxFileSize: "4MB" } })
+  [profileImageEndpoint]: f({ image: { maxFileSize, maxFileCount } })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
-      // This code runs on your server before upload
-      const user = await auth(req);
+    .middleware(async () => {
+      const session = await getServerSession()
 
-      // If you throw, the user will not be able to upload
-      if (!user) throw new Error("Unauthorized");
+      // reject if user is not logged in
+      if (!session || !session.user || !session.user.role || session.user.role !== "CLIENT") {
+        throw new Error("Unauthorized")
+      }
 
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id };
+      return session.user
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.url);
+      try {
+        await prisma.client.update({
+          where: { userId: metadata.id },
+          data: {
+            photoUrl: file.url,
+          }
+        })  
+      } catch (e) {
+        await utapi.deleteFiles(file.name)
+      }
     }),
 } satisfies FileRouter;
 

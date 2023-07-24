@@ -24,6 +24,11 @@ export async function getAuthorizedUser(credentials: Credentials, allData = fals
     }
   });
 
+  // if user is matchmaker and not authorized by admin, reject
+  if (user?.role === "MATCHMAKER" && !user?.matchmaker?.adminAuthorizerId) {
+    return null
+  }
+
   // if user not found or wrong role or user is baned or wrong password
   if (
     !user // user not found
@@ -53,8 +58,3 @@ export function isAuthorizedByRolePolicy(role: Role, match: Role): boolean {
 export async function getServerSession(): Promise<Session | null> {
   return await nextAuthGetServerSession(authOptions)
 } 
-
-// 
-export async function isMatchmakerAuthorized(user: UserWithMatchmaker): Promise<boolean> {
-  return !user.isBaned && Boolean(user.matchmaker?.adminAuthorizerId);
-}

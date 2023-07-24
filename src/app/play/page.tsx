@@ -2,6 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import { usePopper } from "@/providers/popper";
+import { UploadButton } from "@uploadthing/react";
+import { OurFileRouter, profileImageEndpoint } from "@/app/api/uploadthing/core";
+
+export const OurUploadButton = () => (
+  <UploadButton<OurFileRouter>
+    endpoint={profileImageEndpoint}
+    onClientUploadComplete={(res) => {
+      // Do something with the response
+      console.log("Files: ", res);
+      alert("Upload Completed");
+    }}
+    onUploadError={(error: Error) => {
+      // Do something with the error.
+      alert(`ERROR! ${error.message}`);
+    }}
+  />
+);
 
 export default function Playground() {
   const { pop } = usePopper();
@@ -9,6 +26,7 @@ export default function Playground() {
   return (
     <>
       <div className="text-3xl font-semibold my-3 ml-2">play Page</div>
+      <OurUploadButton />
       <div className="space-x-2 flex justify-center ">
         <Button
           onClick={() =>
