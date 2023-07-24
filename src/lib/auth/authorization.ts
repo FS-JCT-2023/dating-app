@@ -1,8 +1,10 @@
 import { prisma } from "@/db/prismaClient";
-import { User, Role } from "@prisma/client";
+import { User, Role, Matchmaker } from "@prisma/client";
 import { comparePassword } from "@/lib/auth/password-utils";
 import { getServerSession as nextAuthGetServerSession, type Session } from 'next-auth';
 import { authOptions } from '@/config/nextAuth';
+
+type UserWithMatchmaker = User & { matchmaker?: Matchmaker}
 
 export type Credentials = Pick<User, "email"> & { password: string } & Pick<User, "role">;
 
@@ -51,3 +53,8 @@ export function isAuthorizedByRolePolicy(role: Role, match: Role): boolean {
 export async function getServerSession(): Promise<Session | null> {
   return await nextAuthGetServerSession(authOptions)
 } 
+
+// 
+export async function isMatchmakerAuthorized(user: UserWithMatchmaker): Promise<boolean> {
+  return !user.isBaned && Boolean(user.matchmaker?.adminAuthorizerId);
+}

@@ -1,6 +1,9 @@
 import Image from 'next/image'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/config/nextAuth';
+import { prisma } from '@/db/prismaClient';
+
+export const revalidate = 60 * 60 * 24 * 7 // 1 week
 
 export default async function Home() {
   const session = await getServerSession(authOptions)

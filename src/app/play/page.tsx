@@ -6,8 +6,6 @@ import { usePopper } from "@/providers/popper";
 export default function Playground() {
   const { pop } = usePopper();
 
-  throw new Error("This is an error");
-  
   return (
     <>
       <div className="text-3xl font-semibold my-3 ml-2">play Page</div>

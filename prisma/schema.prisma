@@ -110,8 +110,8 @@ model Matchmaker {
     userId String @unique
 
     // matchmaker musst be authorized by an admin
-    adminAuthoriser   Admin?  @relation(fields: [adminAuthoriserId], references: [userId])
-    adminAuthoriserId String?
+    adminAuthorizer   Admin?  @relation(fields: [adminAuthorizerId], references: [userId])
+    adminAuthorizerId String?
 
     matches Match[]
     reports Report[]
