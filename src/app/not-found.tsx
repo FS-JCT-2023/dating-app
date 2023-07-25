@@ -1,7 +1,7 @@
 import React from 'react';
 import { getServerSession } from '@/lib/auth/authorization';
 
-import { adminDashboardUrl, clientDashboardUrl, matchMakerDashboardUrl } from '@/lib/links';
+import { adminDashboardUrl, clientDashboardUrl, matchMakerDashboardUrl } from '@/components/Nav/links';
 import Link from 'next/link';
 import { type Session } from 'next-auth';
 
