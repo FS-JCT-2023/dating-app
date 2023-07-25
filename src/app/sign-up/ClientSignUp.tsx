@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Card,
   CardContent,
@@ -9,7 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea"
+import ControlledDatePiker from "@/components/ControlledDatePicker";
+import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -21,25 +23,31 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePopper } from "@/providers/popper";
 import axios from "axios";
+import { useMemo } from "react";
+import { Form } from "@/components/ui/form";
 
-
-const signUpClientSchemaClient = signUpClientSchema.merge(z.object({
-  confirmPassword: z.string().min(8),
-})).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
-
+const signUpClientSchemaClient = signUpClientSchema
+  .merge(
+    z.object({
+      confirmPassword: z.string().min(8),
+    })
+  )
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export default function ClientSignUp() {
+  const form = useForm<z.infer<typeof signUpClientSchemaClient>>({
+    resolver: zodResolver(signUpClientSchemaClient),
+  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<z.infer<typeof signUpClientSchemaClient>>({
-    resolver: zodResolver(signUpClientSchemaClient),
-  });
+  } = useMemo(() => form, [form]);
 
   const { pop } = usePopper();
 
@@ -59,7 +67,7 @@ export default function ClientSignUp() {
           type: "error",
           headline: "Failed to signing up",
           message: "Please check your informations and try again.",
-        })
+        });
         reset();
       } else {
         // TODO redirect to client space
@@ -70,7 +78,7 @@ export default function ClientSignUp() {
         type: "error",
         headline: "Failed to signing up",
         message: "Please check your information and try again.",
-      })
+      });
       reset();
     }
   });
@@ -83,88 +91,124 @@ export default function ClientSignUp() {
           Fill up the fields and click the button to sign-up.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={onClick} className="">
-        <CardContent className="grid gap-2 md:grid-cols-2">
-          <div className="space-y-1">
-            <Label htmlFor="firstName">First Name</Label>
-            <Input {...register("firstName")} id="firstName" type="text" />
-            {errors.firstName?.message && (
-              <Label htmlFor="email" className="text-xs text-red-600">
-                {errors.firstName?.message.toString()}
-              </Label>
+      <Form {...form}>
+        <form onSubmit={onClick} className="">
+          <CardContent className="grid gap-2 md:grid-cols-2">
+            <div className="space-y-1">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input {...register("firstName")} id="firstName" type="text" />
+              {errors.firstName?.message && (
+                <Label htmlFor="email" className="text-xs text-red-600">
+                  {errors.firstName?.message.toString()}
+                </Label>
               )}
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input {...register("lastName")} id="lastName" type="text" />
-            {errors.lastName?.message && (
-              <Label htmlFor="email" className="text-xs text-red-600">
-                {errors.lastName?.message.toString()}
-              </Label>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input {...register("lastName")} id="lastName" type="text" />
+              {errors.lastName?.message && (
+                <Label htmlFor="email" className="text-xs text-red-600">
+                  {errors.lastName?.message.toString()}
+                </Label>
               )}
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="phoneNumber">Phone Number</Label>
-            <Input {...register("phoneNumber")} id="phoneNumber" type="text" />
-            {errors.phoneNumber?.message && (
-              <Label htmlFor="email" className="text-xs text-red-600">
-                {errors.phoneNumber?.message.toString()}
-              </Label>
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                {...register("phoneNumber")}
+                id="phoneNumber"
+                type="text"
+              />
+              {errors.phoneNumber?.message && (
+                <Label htmlFor="email" className="text-xs text-red-600">
+                  {errors.phoneNumber?.message.toString()}
+                </Label>
               )}
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="email">Email</Label>
-            <Input {...register("email")} id="email" type="text" />
-            {errors.email?.message && (
-              <Label className="text-xs text-red-600" htmlFor="email">
-                {errors.email?.message.toString()}
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input {...register("email")} id="email" type="text" />
+              {errors.email?.message && (
+                <Label className="text-xs text-red-600" htmlFor="email">
+                  {errors.email?.message.toString()}
+                </Label>
+              )}
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                {...register("password")}
+                autoComplete="password"
+                id="password"
+                type="password"
+              />
+              {errors.password?.message && (
+                <Label htmlFor="email" className="text-xs text-red-600">
+                  {errors.password?.message.toString()}
+                </Label>
+              )}
+            </div>
+            <div className="space-y-1 md:col-span-2">
+              <Label htmlFor="password">Confirm Password</Label>
+              <Input
+                {...register("confirmPassword")}
+                autoComplete="password"
+                id="confirmPassword"
+                type="password"
+              />
+              {errors.confirmPassword?.message && (
+                <Label htmlFor="password" className="text-xs text-red-600">
+                  {errors.confirmPassword?.message.toString()}
+                </Label>
+              )}
+            </div>
+            <ControlledDatePiker
+              name="birthday"
+              form={form}
+              headline={"Date of birth"}
+            />
+            <RadioGroup {...register("gender")} defaultValue="MALE">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="MALE" id="male" />
+                <Label htmlFor="male">Men</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="FEMALE" id="female" />
+                <Label htmlFor="female">Women</Label>
+              </div>
+            </RadioGroup>
+            <div className="space-y-1 md:col-span-2">
+              <Label htmlFor="about-me">About Me</Label>
+              <Label htmlFor="about-me" className="text-xs opacity-70 block">
+                This will be shard with other people
               </Label>
-            )}
-          </div>
-          <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="password">Password</Label>
-            <Input {...register("password")} autoComplete="password" id="password" type="password" />
-            {errors.password?.message && (
-              <Label htmlFor="email" className="text-xs text-red-600">
-                {errors.password?.message.toString()}
-              </Label>
-            )}
-          </div>
-          <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="password">Confirm Password</Label>
-            <Input {...register("confirmPassword")} autoComplete="password" id="confirmPassword" type="password" />
-            {errors.confirmPassword?.message && (
-              <Label htmlFor="password" className="text-xs text-red-600">
-                {errors.confirmPassword?.message.toString()}
-              </Label>
-            )}
-          </div>
-          <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="about-me">About Me</Label>
-            <Label htmlFor="about-me" className="text-xs opacity-70 block">
-              This will be shard with other people
-            </Label>
-            <Textarea {...register("aboutMe")} autoComplete="about-me" rows={10} id="about-me" />
-            {errors.aboutMe?.message && (
-              <Label htmlFor="about-me" className="text-xs text-red-600">
-                {errors.aboutMe?.message.toString()}
-              </Label>
-            )}
-          </div>
-        </CardContent>
-        <CardContent>
-          <Button type="submit">Sign Up</Button>
-        </CardContent>
-        <input type="hidden" value="CLIENT" {...register("role")} />
-      </form>
-        <CardFooter>
-          <p className="text-sm text-center mx-auto opacity-85">
-            If you already have an account,{" "}
-            <Link href="/sign-in" className="underline text-violet-900">
-              sign in
-            </Link>
-          </p>
-        </CardFooter>
+              <Textarea
+                {...register("aboutMe")}
+                autoComplete="about-me"
+                rows={10}
+                id="about-me"
+              />
+              {errors.aboutMe?.message && (
+                <Label htmlFor="about-me" className="text-xs text-red-600">
+                  {errors.aboutMe?.message.toString()}
+                </Label>
+              )}
+            </div>
+          </CardContent>
+          <CardContent>
+            <Button type="submit">Sign Up</Button>
+          </CardContent>
+          <input type="hidden" value="CLIENT" {...register("role")} />
+        </form>
+      </Form>
+      <CardFooter>
+        <p className="text-sm text-center mx-auto opacity-85">
+          If you already have an account,{" "}
+          <Link href="/sign-in" className="underline text-violet-900">
+            sign in
+          </Link>
+        </p>
+      </CardFooter>
     </Card>
-  )
+  );
 }
