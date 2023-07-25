@@ -9,26 +9,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {axios} from "axios";
+import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { signUpMatchMakerSchema } from "@/lib/validators/auth";
+import { signUpClientSchema } from "@/lib/validators/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePopper } from "@/providers/popper";
+import axios from "axios";
 
-export default function MatchmakerSignUp() {
+
+const signUpClientSchemaClient = signUpClientSchema.merge(z.object({
+  confirmPassword: z.string().min(8),
+})).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+
+export default function ClientSignUp() {
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<z.infer<typeof signUpMatchMakerSchema>>({
-    resolver: zodResolver(signUpMatchMakerSchema),
+  } = useForm<z.infer<typeof signUpClientSchemaClient>>({
+    resolver: zodResolver(signUpClientSchemaClient),
   });
 
   const { pop } = usePopper();
@@ -36,31 +46,45 @@ export default function MatchmakerSignUp() {
   const { push } = useRouter();
 
   const onClick = handleSubmit(async (data) => {
-    if (res?.error) {
+    try {
+      await axios.post("/api/sign-up/client", data);
+      const res = await signIn("credentials", {
+        ...data,
+        callbackUrl: "/",
+        redirect: false,
+      });
+      console.log(res);
+      if (res?.error) {
+        pop({
+          type: "error",
+          headline: "Failed to signing up",
+          message: "Please check your informations and try again.",
+        })
+        reset();
+      } else {
+        // TODO redirect to client space
+        push("/");
+      }
+    } catch (error) {
       pop({
         type: "error",
         headline: "Failed to signing up",
-        message: "Please check your informations and try again.",
+        message: "Please check your information and try again.",
       })
       reset();
-    } else {
-      // TODO redirect to client space
-      push("/");
     }
   });
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Matchmaker Sign-Up</CardTitle>
+        <CardTitle>Client Sign-Up</CardTitle>
         <CardDescription>
-          Enter your informations and then, click the sign-up button to
-          sign-up.
+          Fill up the fields and click the button to sign-up.
         </CardDescription>
       </CardHeader>
       <form onSubmit={onClick} className="">
-        <CardContent className="space-y-2">
-
+        <CardContent className="grid gap-2 md:grid-cols-2">
           <div className="space-y-1">
             <Label htmlFor="firstName">First Name</Label>
             <Input {...register("firstName")} id="firstName" type="text" />
@@ -97,7 +121,7 @@ export default function MatchmakerSignUp() {
               </Label>
             )}
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 md:col-span-2">
             <Label htmlFor="password">Password</Label>
             <Input {...register("password")} autoComplete="password" id="password" type="password" />
             {errors.password?.message && (
@@ -106,11 +130,33 @@ export default function MatchmakerSignUp() {
               </Label>
             )}
           </div>
+          <div className="space-y-1 md:col-span-2">
+            <Label htmlFor="password">Confirm Password</Label>
+            <Input {...register("confirmPassword")} autoComplete="password" id="confirmPassword" type="password" />
+            {errors.confirmPassword?.message && (
+              <Label htmlFor="password" className="text-xs text-red-600">
+                {errors.confirmPassword?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1 md:col-span-2">
+            <Label htmlFor="about-me">About Me</Label>
+            <Label htmlFor="about-me" className="text-xs opacity-70 block">
+              This will be shard with other people
+            </Label>
+            <Textarea {...register("aboutMe")} autoComplete="about-me" rows={10} id="about-me" />
+            {errors.aboutMe?.message && (
+              <Label htmlFor="about-me" className="text-xs text-red-600">
+                {errors.aboutMe?.message.toString()}
+              </Label>
+            )}
+          </div>
         </CardContent>
         <CardContent>
           <Button type="submit">Sign Up</Button>
         </CardContent>
-        <input type="hidden" value="MATCHMAKER" {...register("role")} />
+        <input type="hidden" value="CLIENT" {...register("role")} />
+      </form>
         <CardFooter>
           <p className="text-sm text-center mx-auto opacity-85">
             If you already have an account,{" "}
@@ -119,7 +165,6 @@ export default function MatchmakerSignUp() {
             </Link>
           </p>
         </CardFooter>
-      </form>
     </Card>
-  );
+  )
 }

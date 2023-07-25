@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { usePopper } from "@/providers/popper";
-import UploadProfileImage from "./UploadProfileImage"
+import UploadProfileImage from "../sign-up/UploadProfileImage"
+import { signIn } from "next-auth/react";
 
 export const OurUploadButton = () => (
   <UploadProfileImage />

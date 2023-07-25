@@ -30,6 +30,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+    // NEXT_PUBLIC_SERVER_URL: process.env.NODE_ENV in ["development", "test"] ? `http://localhost:${3000}` : process.env.VERCEL || z.string().url(),
   },
 
   /**

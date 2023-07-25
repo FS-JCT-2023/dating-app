@@ -52,7 +52,7 @@ export const authOptions: NextAuthOptions = {
         role: { label: "Role", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password) {
+        if (!credentials || !credentials.email || !credentials.password || !credentials.role) {
           return null;
         }
         return await getAuthorizedUser(credentials as AuthorizationCredentials);
