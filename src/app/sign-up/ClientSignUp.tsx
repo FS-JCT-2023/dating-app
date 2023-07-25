@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox"
 import ControlledDatePiker from "@/components/ControlledDatePicker";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,7 @@ const signUpClientSchemaClient = signUpClientSchema
   .merge(
     z.object({
       confirmPassword: z.string().min(8),
+      category: z.string().optional().default("DIVORCED"),
     })
   )
   .refine((data) => data.password === data.confirmPassword, {
@@ -167,7 +169,7 @@ export default function ClientSignUp() {
               form={form}
               headline={"Date of birth"}
             />
-            <RadioGroup {...register("gender")} defaultValue="MALE">
+            <RadioGroup {...register("gender")} defaultValue="MALE" className="flex justify-end place-items-end md:pb-2">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="MALE" id="male" />
                 <Label htmlFor="male">Men</Label>
@@ -177,6 +179,20 @@ export default function ClientSignUp() {
                 <Label htmlFor="female">Women</Label>
               </div>
             </RadioGroup>
+            <div className="items-top flex space-x-2">
+              <Checkbox value={"DIVORCED"} {...register("category")} id="divorced" />
+              <div className="grid gap-1.5 leading-none">
+                <label
+                  htmlFor="divorced"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  I a{"'"}m divorced.
+                </label>
+                <p className="text-sm text-muted-foreground">
+                  You can check this box if you are divorced.
+                </p>
+              </div>
+            </div>
             <div className="space-y-1 md:col-span-2">
               <Label htmlFor="about-me">About Me</Label>
               <Label htmlFor="about-me" className="text-xs opacity-70 block">
