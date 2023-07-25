@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { usePopper } from "@/providers/popper";
 import UploadProfileImage from "../sign-up/UploadProfileImage"
-import { signIn } from "next-auth/react";
 
 export const OurUploadButton = () => (
   <UploadProfileImage />
@@ -11,7 +10,7 @@ export const OurUploadButton = () => (
 
 export default function Playground() {
   const { pop } = usePopper();
-
+  
   return (
     <>
       <div className="text-3xl font-semibold my-3 ml-2">play Page</div>

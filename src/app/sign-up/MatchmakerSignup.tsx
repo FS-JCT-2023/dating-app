@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {axios} from "axios";
+import axios from "axios";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -20,8 +20,15 @@ import z from "zod";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePopper } from "@/providers/popper";
+import { FC, useState } from "react";
 
-export default function MatchmakerSignUp() {
+type SignUpState = "pending" | "success" | "error";
+
+type MatchmakerFormProps = {
+  onSuccess: () => void;
+};
+
+const MatchmakerForm: FC<MatchmakerFormProps> = ({ onSuccess }) => {
   const {
     register,
     handleSubmit,
@@ -41,26 +48,24 @@ export default function MatchmakerSignUp() {
         type: "error",
         headline: "Failed to signing up",
         message: "Please check your informations and try again.",
-      })
+      });
       reset();
     } else {
       // TODO redirect to client space
       push("/");
+      onSuccess();
     }
   });
-
   return (
-    <Card>
+    <>
       <CardHeader>
         <CardTitle>Matchmaker Sign-Up</CardTitle>
         <CardDescription>
-          Enter your informations and then, click the sign-up button to
-          sign-up.
+          Enter your informations and then, click the sign-up button to sign-up.
         </CardDescription>
       </CardHeader>
       <form onSubmit={onClick} className="">
         <CardContent className="space-y-2">
-
           <div className="space-y-1">
             <Label htmlFor="firstName">First Name</Label>
             <Input {...register("firstName")} id="firstName" type="text" />
@@ -68,7 +73,7 @@ export default function MatchmakerSignUp() {
               <Label htmlFor="email" className="text-xs text-red-600">
                 {errors.firstName?.message.toString()}
               </Label>
-              )}
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="lastName">Last Name</Label>
@@ -77,7 +82,7 @@ export default function MatchmakerSignUp() {
               <Label htmlFor="email" className="text-xs text-red-600">
                 {errors.lastName?.message.toString()}
               </Label>
-              )}
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="phoneNumber">Phone Number</Label>
@@ -86,7 +91,7 @@ export default function MatchmakerSignUp() {
               <Label htmlFor="email" className="text-xs text-red-600">
                 {errors.phoneNumber?.message.toString()}
               </Label>
-              )}
+            )}
           </div>
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
@@ -99,7 +104,12 @@ export default function MatchmakerSignUp() {
           </div>
           <div className="space-y-1">
             <Label htmlFor="password">Password</Label>
-            <Input {...register("password")} autoComplete="password" id="password" type="password" />
+            <Input
+              {...register("password")}
+              autoComplete="password"
+              id="password"
+              type="password"
+            />
             {errors.password?.message && (
               <Label htmlFor="email" className="text-xs text-red-600">
                 {errors.password?.message.toString()}
@@ -120,6 +130,22 @@ export default function MatchmakerSignUp() {
           </p>
         </CardFooter>
       </form>
+    </>
+  );
+};
+
+const SignUpSuccess: FC = () => {
+  return <div>dsfdsfdf</div>;
+};
+
+export default function MatchmakerSignUp() {
+  const [signUpSate, setSignUpState] = useState<SignUpState>("pending");
+  return (
+    <Card>
+      {signUpSate === "pending" && (
+        <MatchmakerForm onSuccess={() => setSignUpState("success")} />
+      )}
+      {signUpSate === "success" && <SignUpSuccess />}
     </Card>
   );
 }
