@@ -50,8 +50,7 @@ export default function AdminSignIn() {
       });
       reset();
     } else {
-      // TODO redirect to admin space
-      push("/");
+      push("/admin");
     }
   });
   return (

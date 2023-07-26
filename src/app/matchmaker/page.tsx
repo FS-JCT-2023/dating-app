@@ -17,7 +17,7 @@ function getRole(session:any)
       return  UserType.Admin;
       
     default:
-      return UserType.Client;
+      return UserType.MatchMaker;
   }
 }
 
@@ -25,10 +25,10 @@ export default async function ClientDashboard() {
   const session = await getServerSession();
   return (
     <div>
-      <Navbar userType={getRole(session)}/>   
+      <Navbar userType={getRole(session)}/>    
       <div className="">
             {JSON.stringify(session, null, 2)}
-          </div>       
+          </div>      
     </div>
   );
 }

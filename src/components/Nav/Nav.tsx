@@ -31,20 +31,20 @@ const Navbar: React.FC<{ userType: UserType | undefined }> = ({ userType }) => {
   const space = getSpace();
 
   return (
-    <nav className={styles.navbar}>
-    <div className={styles['logo-container']}>
-      <span>Logo</span>
-    </div>
-    <div className={styles['links-container']}>
-      <ul>
-        {Array.from(space.entries()).map(([label, url]) => (
-          <li className={styles['link']} key={label}>
-            <a href={url}>{label}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </nav>
+    <nav className="bg-blue-500 p-4 flex justify-between items-center">
+  <div className="text-white font-bold text-xl">
+    <span>Logo</span>
+  </div>
+  <div>
+    <ul className="flex space-x-4">
+      {Array.from(space.entries()).map(([label, url]) => (
+        <li key={label}>
+          <a href={url} className="text-white hover:underline">{label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
   );
 };
 
