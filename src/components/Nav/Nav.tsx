@@ -9,7 +9,7 @@ export enum UserType {
   Admin = "admin",
 }
 
-const Navbar: React.FC<{ userType: UserType }> = ({ userType }) => {
+const Navbar: React.FC<{ userType: UserType | undefined }> = ({ userType }) => {
   const getSpace = () => {
     switch (userType) {
       case UserType.Client:
@@ -23,18 +23,28 @@ const Navbar: React.FC<{ userType: UserType }> = ({ userType }) => {
     }
   };
 
+  // Handling the undefined case
+  if (userType === undefined) {
+    return <div>Loading...</div>;
+  }
+
   const space = getSpace();
 
   return (
-    <nav>
+    <nav className={styles.navbar}>
+    <div className={styles['logo-container']}>
+      <span>Logo</span>
+    </div>
+    <div className={styles['links-container']}>
       <ul>
         {Array.from(space.entries()).map(([label, url]) => (
-          <li key={label}>
+          <li className={styles['link']} key={label}>
             <a href={url}>{label}</a>
           </li>
         ))}
       </ul>
-    </nav>
+    </div>
+  </nav>
   );
 };
 

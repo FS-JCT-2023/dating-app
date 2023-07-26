@@ -49,7 +49,6 @@ export default function ClientSignIn() {
       })
       reset();
     } else {
-      // TODO redirect to client space
       push("/");
     }
   });
@@ -91,7 +90,7 @@ export default function ClientSignIn() {
         <CardFooter>
           <p className="text-sm text-center mx-auto opacity-85">
             If you don{"'"}t have an account,{" "}
-            <Link href="#" className="underline text-violet-900">
+            <Link href="/sign-up" className="underline text-violet-900">
               sign up
             </Link>
             .
