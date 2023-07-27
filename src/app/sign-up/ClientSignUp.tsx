@@ -30,7 +30,7 @@ import { Form } from "@/components/ui/form";
 const signUpClientSchemaClient = signUpClientSchema
   .merge(
     z.object({
-      confirmPassword: z.string().min(8),
+      confirmPassword: z.string().min(6),
       category: z.string().optional().default("DIVORCED"),
     })
   )
@@ -72,8 +72,7 @@ export default function ClientSignUp() {
         });
         reset();
       } else {
-        // TODO redirect to client space
-        push("/");
+        push("/client");
       }
     } catch (error) {
       pop({
