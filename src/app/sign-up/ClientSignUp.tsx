@@ -75,7 +75,7 @@ export default function ClientSignUp() {
         pop({
           type: "error",
           headline: "Failed to signing up",
-          message: "Please check your informations and try again.",
+          message: "Please check your information and try again.",
         });
         reset();
       } else {
