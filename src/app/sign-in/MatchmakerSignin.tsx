@@ -49,8 +49,7 @@ export default function MatchmakerSignIn() {
       })
       reset();
     } else {
-      // TODO redirect to client space
-      push("/");
+      push("/matchmaker");
     }
   });
 

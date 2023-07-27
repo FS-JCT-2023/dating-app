@@ -2,10 +2,41 @@ import Image from 'next/image'
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/config/nextAuth';
 import { prisma } from '@/db/prismaClient';
+import Navbar from '@/components/Nav/Nav';
+import React, { useEffect, useState } from "react";
+import { UserType } from '@/components/Nav/Nav';
 
 export const revalidate = 60 * 60 * 24 * 7 // 1 week
+function getRole(session:any)
+{
+  switch (session?.user?.role) {
+    case 'CLIENT':
+      return UserType.Client;
+      
+    case 'MATCHMAKER':
+      return UserType.MatchMaker;
+      
+    case 'ADMIN':
+      return  UserType.Admin;
+      
+    default:
+      return UserType.Client;
+  }
+}
 
-export default async function Home() {
+export default async function ClientDashboard() {
+  const session = await getServerSession();
+  return (
+    <div>
+      <Navbar userType={getRole(session)}/>  
+          <div className="">
+            {JSON.stringify(session, null, 2)}
+          </div>      
+    </div>
+    
+  );
+}
+/*export default async function Home() {
   const session = await getServerSession(authOptions)
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -119,4 +150,4 @@ export default async function Home() {
       </div>
     </main>
   )
-}
+}*/
