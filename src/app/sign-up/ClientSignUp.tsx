@@ -26,17 +26,21 @@ import { usePopper } from "@/providers/popper";
 import axios from "axios";
 import { useMemo } from "react";
 import { Form } from "@/components/ui/form";
+import { clientDashboardUrl } from "@/lib/links";
 
 const signUpClientSchemaClient = signUpClientSchema
   .merge(
     z.object({
       confirmPassword: z.string().min(8),
-      category: z.string().optional().default("DIVORCED"),
+      category: z.string().default("aaaaaa"),
+      birthday: z.date({
+        required_error: "Enter your date of birth."
+      })
     })
   )
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["confirmPassword", "password"],
   });
 
 export default function ClientSignUp() {
@@ -57,13 +61,16 @@ export default function ClientSignUp() {
 
   const onClick = handleSubmit(async (data) => {
     try {
-      await axios.post("/api/sign-up/client", data);
+      await axios.post("/api/sign-up/clients", {
+        ...data,
+        birthday: data.birthday.toISOString(),
+        category: data.category ? "DIVORCED" : "SINGLE"
+      });
       const res = await signIn("credentials", {
         ...data,
         callbackUrl: "/",
-        redirect: false,
+        redirect: false
       });
-      console.log(res);
       if (res?.error) {
         pop({
           type: "error",
@@ -72,8 +79,7 @@ export default function ClientSignUp() {
         });
         reset();
       } else {
-        // TODO redirect to client space
-        push("/");
+        push(clientDashboardUrl);
       }
     } catch (error) {
       pop({
@@ -169,9 +175,9 @@ export default function ClientSignUp() {
               form={form}
               headline={"Date of birth"}
             />
-            <RadioGroup {...register("gender")} defaultValue="MALE" className="flex justify-end place-items-end md:pb-2">
+            <RadioGroup {...register("gender")} className="flex justify-end place-items-end md:pb-2">
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="MALE" id="male" />
+                <RadioGroupItem defaultChecked value="MALE" id="male" />
                 <Label htmlFor="male">Men</Label>
               </div>
               <div className="flex items-center space-x-2">
@@ -180,7 +186,7 @@ export default function ClientSignUp() {
               </div>
             </RadioGroup>
             <div className="items-top flex space-x-2">
-              <Checkbox value={"DIVORCED"} {...register("category")} id="divorced" />
+              <Checkbox {...register("category")} id="divorced" />
               <div className="grid gap-1.5 leading-none">
                 <label
                   htmlFor="divorced"
