@@ -1,10 +1,12 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/db/prismaClient";
+import { prisma } from "@/services/prismaClient";
 import { env } from "@/env.mjs";
-import { getAuthorizedUser, Credentials as AuthorizationCredentials } from "@/lib/auth/authorization";
-
+import {
+  getAuthorizedUser,
+  Credentials as AuthorizationCredentials,
+} from "@/lib/auth/authorization";
 
 export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
@@ -52,7 +54,12 @@ export const authOptions: NextAuthOptions = {
         role: { label: "Role", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password || !credentials.role) {
+        if (
+          !credentials ||
+          !credentials.email ||
+          !credentials.password ||
+          !credentials.role
+        ) {
           return null;
         }
         return await getAuthorizedUser(credentials as AuthorizationCredentials);

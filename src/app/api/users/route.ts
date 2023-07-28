@@ -1,4 +1,4 @@
-import { prisma } from "@/db/prismaClient";
+import { prisma } from "@/services/prismaClient";
 import { getServerSession } from "@/lib/auth/authorization";
 import { getPaginationParams } from "@/lib/params-utils";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,14 +23,12 @@ async function GET(req: NextRequest) {
         matchmaker: true,
       },
     });
-    return NextResponse.json(
-      {
-        users: users.map((user) => ({ ...user, password_hash: undefined })),
-        count: users.length,
-        page, 
-        page_size,
-      }
-    );
+    return NextResponse.json({
+      users: users.map((user) => ({ ...user, password_hash: undefined })),
+      count: users.length,
+      page,
+      page_size,
+    });
   } catch (e) {
     const error = e as Error;
     return NextResponse.json({ error: error.message }, { status: 500 });

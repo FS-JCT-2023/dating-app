@@ -1,11 +1,17 @@
 import { HaveChildren } from "@/types";
-import {PopperContextProvider} from "./popper";
+import { PopperContextProvider } from "./popper";
+import { TanstackQueryProvider } from "./tanstackQuery";
+import { NextAuthSessionProvider } from "./session";
 
 // provider for all providers
-export function Providers({children}: HaveChildren) {
+export function Providers({ children }: HaveChildren) {
   return (
-    <PopperContextProvider>
-      {children}
-    </PopperContextProvider>
+    <TanstackQueryProvider>
+      <NextAuthSessionProvider>
+        <PopperContextProvider>
+          {children}
+        </PopperContextProvider>
+      </NextAuthSessionProvider>
+    </TanstackQueryProvider>
   );
 }
