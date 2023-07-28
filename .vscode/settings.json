@@ -21,6 +21,7 @@
     "hookform",
     "Signin",
     "tailwindcss",
+    "tanstack",
     "Uploadthing"
   ]
 }
