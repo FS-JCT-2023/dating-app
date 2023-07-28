@@ -24,18 +24,16 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { usePopper } from "@/providers/popper";
 import axios from "axios";
-import { useMemo } from "react";
 import { Form } from "@/components/ui/form";
-import { clientDashboardUrl } from "@/lib/links";
 
 const signUpClientSchemaClient = signUpClientSchema
   .merge(
     z.object({
-      confirmPassword: z.string().min(8),
-      category: z.string().default("aaaaaa"),
+      confirmPassword: z.string().min(6),
+      category: z.string().regex(/^(on|off)$/).optional().default("off"),
       birthday: z.date({
-        required_error: "Enter your date of birth."
-      })
+        required_error: "Please fill your date of birth",
+      }),
     })
   )
   .refine((data) => data.password === data.confirmPassword, {
@@ -44,32 +42,33 @@ const signUpClientSchemaClient = signUpClientSchema
   });
 
 export default function ClientSignUp() {
+  const { pop } = usePopper();
+  const { push } = useRouter();
+
   const form = useForm<z.infer<typeof signUpClientSchemaClient>>({
     resolver: zodResolver(signUpClientSchemaClient),
   });
-
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useMemo(() => form, [form]);
+  } = form
 
-  const { pop } = usePopper();
-
-  const { push } = useRouter();
-
-  const onClick = handleSubmit(async (data) => {
+  const formSubmitHandler = handleSubmit(async (data) => {
     try {
       await axios.post("/api/sign-up/clients", {
         ...data,
+        category: data.category === "on" ? "DIVORCED" : "SINGLE",
         birthday: data.birthday.toISOString(),
-        category: data.category ? "DIVORCED" : "SINGLE"
       });
       const res = await signIn("credentials", {
-        ...data,
+        email: data.email,
+        password: data.password,
+        role: "CLIENT",
         callbackUrl: "/",
-        redirect: false
+        redirect: false,
       });
       if (res?.error) {
         pop({
@@ -79,7 +78,7 @@ export default function ClientSignUp() {
         });
         reset();
       } else {
-        push(clientDashboardUrl);
+        push("/client");
       }
     } catch (error) {
       pop({
@@ -100,13 +99,13 @@ export default function ClientSignUp() {
         </CardDescription>
       </CardHeader>
       <Form {...form}>
-        <form onSubmit={onClick} className="">
+        <form onSubmit={formSubmitHandler} className="">
           <CardContent className="grid gap-2 md:grid-cols-2">
             <div className="space-y-1">
               <Label htmlFor="firstName">First Name</Label>
               <Input {...register("firstName")} id="firstName" type="text" />
               {errors.firstName?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
+                <Label htmlFor="firstName" className="text-xs text-red-600">
                   {errors.firstName?.message.toString()}
                 </Label>
               )}
@@ -115,7 +114,7 @@ export default function ClientSignUp() {
               <Label htmlFor="lastName">Last Name</Label>
               <Input {...register("lastName")} id="lastName" type="text" />
               {errors.lastName?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
+                <Label htmlFor="lastName" className="text-xs text-red-600">
                   {errors.lastName?.message.toString()}
                 </Label>
               )}
@@ -128,7 +127,7 @@ export default function ClientSignUp() {
                 type="text"
               />
               {errors.phoneNumber?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
+                <Label htmlFor="phoneNumber" className="text-xs text-red-600">
                   {errors.phoneNumber?.message.toString()}
                 </Label>
               )}
@@ -137,7 +136,7 @@ export default function ClientSignUp() {
               <Label htmlFor="email">Email</Label>
               <Input {...register("email")} id="email" type="text" />
               {errors.email?.message && (
-                <Label className="text-xs text-red-600" htmlFor="email">
+                <Label className="text-xs text-red-600" htmlFor="phoneNumber">
                   {errors.email?.message.toString()}
                 </Label>
               )}
@@ -151,13 +150,13 @@ export default function ClientSignUp() {
                 type="password"
               />
               {errors.password?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
+                <Label htmlFor="password" className="text-xs text-red-600">
                   {errors.password?.message.toString()}
                 </Label>
               )}
             </div>
             <div className="space-y-1 md:col-span-2">
-              <Label htmlFor="password">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 {...register("confirmPassword")}
                 autoComplete="password"
@@ -165,7 +164,7 @@ export default function ClientSignUp() {
                 type="password"
               />
               {errors.confirmPassword?.message && (
-                <Label htmlFor="password" className="text-xs text-red-600">
+                <Label htmlFor="confirmPassword" className="text-xs text-red-600">
                   {errors.confirmPassword?.message.toString()}
                 </Label>
               )}
@@ -175,7 +174,7 @@ export default function ClientSignUp() {
               form={form}
               headline={"Date of birth"}
             />
-            <RadioGroup {...register("gender")} className="flex justify-end place-items-end md:pb-2">
+            <RadioGroup {...register("gender")}  className="flex justify-end place-items-end md:pb-2">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem defaultChecked value="MALE" id="male" />
                 <Label htmlFor="male">Men</Label>
@@ -217,10 +216,10 @@ export default function ClientSignUp() {
               )}
             </div>
           </CardContent>
+          <input type="hidden" value="CLIENT" {...register("role")} />
           <CardContent>
             <Button type="submit">Sign Up</Button>
           </CardContent>
-          <input type="hidden" value="CLIENT" {...register("role")} />
         </form>
       </Form>
       <CardFooter>
