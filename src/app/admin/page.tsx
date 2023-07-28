@@ -1,6 +1,6 @@
 import Navbar from '@/components/Nav/Nav';
 import React, { useEffect, useState } from "react";
-import { getServerSession } from 'next-auth';
+import { getServerSession } from '@/lib/auth/authorization';
 import { UserType } from '@/components/Nav/Nav';
 
 
