@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 async function GET(req: NextRequest) {
   const session = await getServerSession();
-  if (!session?.user || !(session.user.role in ["ADMIN", "MATCHMAKER"])) {
+  if (!session?.user || !["ADMIN", "CLIENT"].includes(session.user.role)) {
+    console.log(session);
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -17,8 +18,19 @@ async function GET(req: NextRequest) {
       where: {
         role: session.user.role === "ADMIN" ? undefined : "CLIENT",
       },
+      include: {
+        client: true,
+        matchmaker: true,
+      },
     });
-    return NextResponse.json(users);
+    return NextResponse.json(
+      {
+        users: users.map((user) => ({ ...user, password_hash: undefined })),
+        count: users.length,
+        page, 
+        page_size,
+      }
+    );
   } catch (e) {
     const error = e as Error;
     return NextResponse.json({ error: error.message }, { status: 500 });
