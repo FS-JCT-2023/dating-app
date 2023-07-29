@@ -32,26 +32,24 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       try {
-        const user = await prisma.user.findUnique({
-          where: { id: metadata.id },
+        const user = await prisma.client.findUnique({
+          where: { userId: metadata.id },
         });
 
         if (!user) {
           throw new Error("User not found");
         }
 
-        if (user.image) {
-          await utapi.deleteFiles(user.image);
+        if (user.photoUrl) {
+          await utapi.deleteFiles(user.photoUrl);
         }
         
-        const updatedUser = await prisma.user.update({
-          where: { id: metadata.id },
+        await prisma.client.update({
+          where: { userId: metadata.id },
           data: {
-            image: file.url,
+            photoUrl: file.url,
           },
         });
-
-        console.log(updatedUser);
       } catch (e) {
         await utapi.deleteFiles(file.name);
       }

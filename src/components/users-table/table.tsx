@@ -3,6 +3,7 @@ import { columns } from "./columns"
 import { DataTable } from "./data-table"
 // import { apiClient } from "@/services/apiClient"
 import { prisma } from "@/services/prismaClient"
+import { getRandomProfileImageUrl } from "@/lib/images"
 
 async function getData(): Promise<User[]> {
   return (await prisma.user.findMany({
@@ -15,6 +16,7 @@ async function getData(): Promise<User[]> {
   })).map((user) => ({
     ...user,
     ...user.client,
+    image: user.client?.photoUrl || getRandomProfileImageUrl()
   })) as User[]
 }
 

@@ -7,6 +7,7 @@ import {
   getAuthorizedUser,
   Credentials as AuthorizationCredentials,
 } from "@/lib/auth/authorization";
+import { getRandomProfileImageUrl } from "@/lib/images";
 
 export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
@@ -37,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           role: u.role,
           id: u.id,
+          image: u.client?.photoUrl || u.image || getRandomProfileImageUrl(),
         };
       }
       return token;
