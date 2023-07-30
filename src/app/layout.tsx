@@ -1,3 +1,4 @@
+import Navbar from "./Navbar";
 import "./globals.css";
 import { Providers } from "@/providers/providers";
 import type { Metadata } from "next";
@@ -17,8 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen`}>
-        <div className="bg-transparent">
+      <body className={`${inter.className} min-h-screen `}>
+        <div className="">
+          <Navbar />
           <Providers>{children}</Providers>
         </div>
       </body>
