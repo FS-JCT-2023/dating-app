@@ -11,7 +11,7 @@ async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { page, page_size } = getPaginationParams(req);
+  const { page, page_size } = getPaginationParams(new URL(req.nextUrl));
   try {
     const users = await prisma.user.findMany({
       skip: (page - 1) * page_size,

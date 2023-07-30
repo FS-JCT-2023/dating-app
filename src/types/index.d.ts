@@ -17,3 +17,21 @@ interface User extends PrismaUser {
 interface UserSession {
   user: Session["user"]
 }
+
+interface ClientsFromApi extends User, Client {}
+
+interface Filters {
+  page: number;
+  page_size: number;
+  search: string;
+  categories: Client["category"][]
+  gender?: Client["gender"]
+}
+
+interface ApiResponse<T> {
+  data: T[];
+  error?: string; 
+  count: number;
+  page: number;
+  page_size: number;
+}

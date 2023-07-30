@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge, OutlineColoredBadge } from "@/components/ui/badge"
+import { OutlineColoredBadge } from "@/components/ui/badge"
 import { getRandomProfileImageUrl } from "@/lib/images"
 import { FC } from "react"
 

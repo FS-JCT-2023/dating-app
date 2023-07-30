@@ -1,12 +1,15 @@
 "use client";
 
-import AddImage from "@/components/UploadProfileImage"
+import { ApiResponse, ClientsFromApi } from "@/types";
+// import AddImage from "@/components/UploadProfileImage"
+import { useInfiniteQuery } from "@tanstack/react-query";
 
+function Page() {
 
-function page() {
   return (
-    <div><AddImage /></div>
+    <div>
+    </div>
   )
 }
 
-export default page
+export default Page
