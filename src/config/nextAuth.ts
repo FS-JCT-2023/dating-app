@@ -1,10 +1,13 @@
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/db/prismaClient";
+import { prisma } from "@/services/prismaClient";
 import { env } from "@/env.mjs";
-import { getAuthorizedUser, Credentials as AuthorizationCredentials } from "@/lib/auth/authorization";
-
+import {
+  getAuthorizedUser,
+  Credentials as AuthorizationCredentials,
+} from "@/lib/auth/authorization";
+import { getRandomProfileImageUrl } from "@/lib/images";
 
 export const authOptions: NextAuthOptions = {
   secret: env.NEXTAUTH_SECRET,
@@ -35,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           role: u.role,
           id: u.id,
+          image: u.client?.photoUrl || u.image || getRandomProfileImageUrl(),
         };
       }
       return token;
@@ -52,7 +56,12 @@ export const authOptions: NextAuthOptions = {
         role: { label: "Role", type: "text" },
       },
       async authorize(credentials) {
-        if (!credentials || !credentials.email || !credentials.password || !credentials.role) {
+        if (
+          !credentials ||
+          !credentials.email ||
+          !credentials.password ||
+          !credentials.role
+        ) {
           return null;
         }
         return await getAuthorizedUser(credentials as AuthorizationCredentials);

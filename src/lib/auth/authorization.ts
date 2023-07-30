@@ -1,41 +1,51 @@
-import { prisma } from "@/db/prismaClient";
+import { prisma } from "@/services/prismaClient";
 import { User, Role, Matchmaker } from "@prisma/client";
 import { comparePassword } from "@/lib/auth/password-utils";
-import { getServerSession as nextAuthGetServerSession, type Session } from 'next-auth';
-import { authOptions } from '@/config/nextAuth';
+import {
+  getServerSession as nextAuthGetServerSession,
+  type Session,
+} from "next-auth";
+import { authOptions } from "@/config/nextAuth";
 
-type UserWithMatchmaker = User & { matchmaker?: Matchmaker}
+type UserWithMatchmaker = User & { matchmaker?: Matchmaker };
 
-export type Credentials = Pick<User, "email"> & { password: string } & Pick<User, "role">;
+export type Credentials = Pick<User, "email"> & { password: string } & Pick<
+    User,
+    "role"
+  >;
 
 // check if user is authorized
 export function isAuthorized(user: User, mustBe: Role = "CLIENT"): boolean {
   return user.role === mustBe && !user.isBaned;
 }
 
-// get user from db and check if user is authorized 
-export async function getAuthorizedUser(credentials: Credentials, allData = false): Promise<User | null> {
+// get user from db and check if user is authorized
+export async function getAuthorizedUser(
+  credentials: Credentials,
+  allData = false
+): Promise<User | null> {
   const user = await prisma.user.findUnique({
     where: { email: credentials.email || "" },
     include: {
       admin: allData && credentials.role === "ADMIN",
       client: allData && credentials.role === "CLIENT",
       matchmaker: allData && credentials.role === "MATCHMAKER",
-    }
+    },
   });
 
   // if user is matchmaker and not authorized by admin, reject
   if (user?.role === "MATCHMAKER" && !user?.matchmaker?.adminAuthorizerId) {
-    return null
+    return null;
   }
 
   // if user not found or wrong role or user is baned or wrong password
   if (
-    !user // user not found
-    || user.role !== credentials.role // wrong role
-    || user.isBaned // user is baned
-    || !(await comparePassword(credentials.password, user.password_hash || "")) // wrong password
-  ) return null;
+    !user || // user not found
+    user.role !== credentials.role || // wrong role
+    user.isBaned || // user is baned
+    !(await comparePassword(credentials.password, user.password_hash || "")) // wrong password
+  )
+    return null;
 
   return user;
 }
@@ -56,5 +66,5 @@ export function isAuthorizedByRolePolicy(role: Role, match: Role): boolean {
 
 // get user session if exist
 export async function getServerSession(): Promise<Session | null> {
-  return await nextAuthGetServerSession(authOptions)
-} 
+  return await nextAuthGetServerSession(authOptions);
+}

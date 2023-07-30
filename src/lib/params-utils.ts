@@ -18,9 +18,7 @@ const defaultPaginationParams: PaginationParams = {
 export function getPaginationParams(req: NextRequest): PaginationParams {
   const url = new URL(req.nextUrl);
   const page = parseInt(url.searchParams.get("page") || "1");
-  const page_size = parseInt(
-    url.searchParams.get("page_size") || maxPageSize.toString()
-  );
+  const page_size = parseInt(url.searchParams.get("page_size") || "20");
 
   if (isNaN(page) || isNaN(page_size) || page_size < 1 || page_size < 1) {
     return defaultPaginationParams;

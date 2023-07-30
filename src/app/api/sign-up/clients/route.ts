@@ -1,5 +1,5 @@
 import { authOptions } from "@/config/nextAuth";
-import { prisma } from "@/db/prismaClient";
+import { prisma } from "@/services/prismaClient";
 import { NextRequest, NextResponse } from "next/server";
 import { signUpClientSchema } from "@/lib/validators/auth";
 import { hashPassword } from "@/lib/auth/password-utils";
