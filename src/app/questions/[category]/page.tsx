@@ -2,7 +2,11 @@ import { Answer, QuestionType } from "@prisma/client"
 import { prisma } from "@/services/prismaClient"
 import { getServerSession } from "@/lib/auth/authorization"
 import { redirect } from "next/navigation"
-import {Questions} from './QuestionsForm'
+import { Questions } from './QuestionsForm'
+import { FC } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 type QuestionProps = {
   params: {
@@ -13,7 +17,35 @@ type QuestionProps = {
 // revalidate data every 24 hours
 export const revalidate = 60 * 60 * 24 // 24 hours
 
-export default async function Question({params}: QuestionProps) {
+type QuestionsHeadlineProps = {
+  type?: QuestionType
+}
+
+const QuestionsHeadline: FC<QuestionsHeadlineProps> = () => {
+  return (
+    <div className="mb-5">
+      <h1 className="text-3xl font-semibold mx-5">Questions</h1>
+      <p className="text-sm mx-5 opacity-70">Please answer the following questions to help us find your match</p>
+    </div>
+  )
+}
+
+const QuestionsLinks = ({ currentCategory }: { currentCategory: string }) => {
+  const categories = ["PERSONALITY", "PREFERENCE", "BIO", "RELIGION", "LIFESTYLE", "BACKGROUND", "OTHER", "LOOKINS_FOR"]
+  return (
+    <div className="flex justify-around px-5 absolute top-0 opacity-80 bg-black py-5 w-full shadow-xl">
+      <div className="flex justify- space-x-3">
+        {categories.map((category) => (
+          <Link key={category} href={`/questions/${category}`} className=" capitalize">
+            <Button className="opacity-100" size={"sm"} variant={"outline"} disabled={category === currentCategory}>{category}</Button>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default async function Question({ params }: QuestionProps) {
   const session = await getServerSession();
   if (!session || !session.user || session.user.role !== "CLIENT") {
     return redirect("/sign-in")
@@ -22,7 +54,7 @@ export default async function Question({params}: QuestionProps) {
   const questions = await prisma.question.findMany({
     where: {
       type: params.category
-    }, 
+    },
     include: {
       options: true
     }
@@ -36,12 +68,21 @@ export default async function Question({params}: QuestionProps) {
       }
     },
   })
-  
-  
+
   return (
     <>
-    <div><Questions type={params.category} questions={questions} prevAnswers={answers} /></div>
+      <QuestionsLinks currentCategory={params.category} />
+      <div className="my-10 mx-auto max-w-lg">
+        <Image
+          src={"/black-logo.png"}
+          alt="logo"
+          width={200}
+          height={200}
+          className="mx-auto mt-24"
+        />
+        <QuestionsHeadline />
+        <Questions type={params.category} questions={questions} prevAnswers={answers} />
+      </div>
     </>
-
-    )
+  )
 }

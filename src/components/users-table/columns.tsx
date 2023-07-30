@@ -2,7 +2,7 @@
 
 import { User } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
-import { ClientAvatar, Badges } from "./RowCells"
+import { ClientAvatar, Badges, Actions } from "./RowCells"
 import { Client } from "@prisma/client"
 import Link from "next/link"
 
@@ -58,4 +58,9 @@ export const columns: ColumnDef<User>[] = [
       return [day, month, year].join('/');
     }
   },
+  {
+    accessorKey: "id",
+    header: "Actions",
+    cell: ({cell}) => <Actions id={cell.getValue() as string} />
+  }
 ]

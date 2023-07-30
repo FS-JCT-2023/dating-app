@@ -34,11 +34,40 @@ export function getPaginationParams(url: URL): PaginationParams {
 export function getFilterParams(req: NextRequest): Filters {
   const url = new URL(req.nextUrl);
   const search = url.searchParams.get("search") || "";
-  const categories = url.searchParams.getAll("categories") as Filters["categories"];
-  const gender = url.searchParams.get("gender") as Gender || null;
+  const categories = url.searchParams.getAll(
+    "categories"
+  ) as Filters["categories"];
+  const gender = (url.searchParams.get("gender") as Gender) || null;
 
   return {
     ...getPaginationParams(url),
+    search,
+    categories,
+    gender,
+  };
+}
+
+export function getParams(searchParams?: {
+  [key: string]: string | string[] | undefined;
+}): Filters {
+  const search = searchParams?.search as string || undefined;
+  const categories =
+    (searchParams?.categories as Filters["categories"]) || undefined;
+  const gender = (searchParams?.gender as Gender) || undefined;
+  let page: number | undefined = parseInt(searchParams?.page as string) || 1;
+  let page_size: number | undefined =
+    parseInt(searchParams?.page_size as string) || 20;
+  if (page < 1) {
+    page = undefined;
+  }
+
+  if (page_size < 1) {
+    page_size = undefined;
+  }
+
+  return {
+    page,
+    page_size,
     search,
     categories,
     gender,

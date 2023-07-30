@@ -79,7 +79,7 @@ export function Questions({ questions, type, prevAnswers }: QuestionsProps) {
     }
   })
   return (
-    <div className="space-y-3 mx-auto max-w-[450px]">
+    <div className="space-y-3">
       {questions.map((question) => {
         const prevAnswer = prevAnswers?.find((answer: Answer) => answer.userId === question.id)
         return <QuestionForm
