@@ -4,9 +4,8 @@ module.exports = {
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx,jsx}',
-    './src/**/*.{ts,tsx,jsx}',
-    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
 	],
   theme: {
     container: {
@@ -33,5 +32,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require('tailwindcss-animated')],
+  plugins: [require("tailwindcss-animate")],
 }
