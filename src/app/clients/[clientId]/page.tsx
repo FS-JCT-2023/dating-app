@@ -28,7 +28,9 @@ async function ClientDetailsPage({params}: ClientDetailsPageProps) {
   }
 
   return (
-    <div>{JSON.stringify(client)}</div>
+    <div>
+      
+    </div>
   )
 }
 
