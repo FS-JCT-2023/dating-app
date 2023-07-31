@@ -5,6 +5,7 @@ import { prisma } from '@/services/prismaClient'
 import {columns} from "@/components/users-table/columns"
 import { Client, User } from '@prisma/client'
 import { ClientsFromApi } from "@/types"
+import {ClientFilters} from "./filters"
 
 type ClientPageProps = {
   searchParams?: { [key: string]: string | string[] | undefined }
@@ -17,15 +18,37 @@ async function ClientPage({ searchParams }: ClientPageProps) {
     page,
     page_size,
     search,
-    categories,
-    gender 
+    category,
+    gender, 
+    isDating
   } = getParams(searchParams)
 
   const clients = await prisma.user.findMany({
     where: {
       role: "CLIENT",
       client: {
+        gender,
+        isDating,
+        category: category as Client["category"],
       },
+      OR: search ? [
+        {
+          firstName: {
+            contains: search,
+          },
+        },
+        {
+          email: {
+            contains: search,
+          },
+        },
+        {
+          lastName: {
+            contains: search,
+          },
+        }
+      ] : undefined
+
     },
     include: {
       client: true
@@ -35,8 +58,9 @@ async function ClientPage({ searchParams }: ClientPageProps) {
   }) 
 
   return (
-    <div className='max-w-5xl mx-auto m-10 text-sm px-1'>
-      <h1 className="text-3xl font-semibold mx-5">Clients</h1>
+    <div className='max-w-5xl mx-auto m-10 text-sm px-1 space-y-5'>
+      <h1 className="text-3xl font-semibold my-5">Clients</h1>
+      <ClientFilters totalItems={clients.length} />
       <DataTable
         data={clients.map(user => ({
           ...user,

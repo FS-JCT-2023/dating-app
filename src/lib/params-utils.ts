@@ -49,14 +49,14 @@ export function getFilterParams(req: NextRequest): Filters {
 
 export function getParams(searchParams?: {
   [key: string]: string | string[] | undefined;
-}): Filters {
-  const search = searchParams?.search as string || undefined;
-  const categories =
-    (searchParams?.categories as Filters["categories"]) || undefined;
-  const gender = (searchParams?.gender as Gender) || undefined;
+}) {
+  const search = (searchParams?.search as string) || undefined;
+  const category = searchParams?.category != "undefined" ? searchParams?.category : undefined;
+  const gender = searchParams?.gender != "undefined" ? (searchParams?.gender as Gender) : undefined;
+  const isDating = searchParams?.isDating != "undefined" ? searchParams?.isDating === "true" : undefined;
+  let page_size: number | undefined = parseInt(searchParams?.page_size as string) || 20;
   let page: number | undefined = parseInt(searchParams?.page as string) || 1;
-  let page_size: number | undefined =
-    parseInt(searchParams?.page_size as string) || 20;
+  
   if (page < 1) {
     page = undefined;
   }
@@ -69,7 +69,8 @@ export function getParams(searchParams?: {
     page,
     page_size,
     search,
-    categories,
+    category,
     gender,
+    isDating,
   };
 }
