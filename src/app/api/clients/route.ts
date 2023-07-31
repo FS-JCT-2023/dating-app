@@ -13,7 +13,7 @@ async function GET(req: NextRequest) {
   const { page, page_size, categories, search, gender } = getFilterParams(req);
   try {
     const users = await prisma.user.findMany({
-      skip: (page - 1) * page_size,
+      skip: (page || 1 - 1) * (page_size || 20),
       take: page_size,
       where: {
         role: "CLIENT",
@@ -34,7 +34,7 @@ async function GET(req: NextRequest) {
           : undefined,
         client: {
           gender: gender || undefined,
-          OR: categories.length ? categories.map((cat: ClientCategory) => ({
+          OR: categories?.length ? categories.map((cat: ClientCategory) => ({
               category: cat,
             })) : undefined
         }

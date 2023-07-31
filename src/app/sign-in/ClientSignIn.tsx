@@ -49,7 +49,7 @@ export default function ClientSignIn() {
       })
       reset();
     } else {
-      push("/client");
+      push("/dashboard");
     }
   });
 

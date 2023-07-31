@@ -49,7 +49,7 @@ export default function MatchmakerSignIn() {
       })
       reset();
     } else {
-      push("/matchmaker");
+      push("/dashboard");
     }
   });
 

@@ -3,12 +3,24 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { OutlineColoredBadge } from "@/components/ui/badge"
 import { getRandomProfileImageUrl } from "@/lib/images"
-import { FC } from "react"
+import { FC, useState } from "react"
 import { Button } from "../ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import Link from "next/link"
+import { useSession } from "next-auth/react"
 import {
-  DotsHorizontalIcon,
-} from "@radix-ui/react-icons"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { banUser } from "@/services/clientAction";
+import { Textarea } from "../ui/textarea";
+import { useForm } from "react-hook-form";
 
 export const ClientAvatar: FC<{ url?: string }> = ({ url }) => {
   return (
@@ -54,7 +66,7 @@ export const IsDatingBadge = () => (
 export const Badges: FC<BadgesProps> = ({ gender, isDating, category }) => {
   return (
     <div className="flex flex-wrap gap-1">
-      {gender.includes("MALE") ? <MenBadge /> : <WomenBadge />}
+      {gender === "FEMALE" ? <WomenBadge /> : <MenBadge />}
       {isDating && <IsDatingBadge />}
       {category === "DIVORCED" && <DivorcedBadge />}
       {category === "SINGLE" && <SingleBadge />}
@@ -63,9 +75,44 @@ export const Badges: FC<BadgesProps> = ({ gender, isDating, category }) => {
   )
 }
 
-export const Actions = ({ id }: { id: string }) => {
+type BanUserDialogProps = {
+  id: string
+  setOpen: (open: true | undefined) => void
+}
+
+const BanUserDialog = ({ id, setOpen }: BanUserDialogProps) => {
+
+  const {register, handleSubmit} = useForm()
+
   return (
-    <DropdownMenu>
+    <Dialog onOpenChange={(e) => setOpen(e ? true : undefined)}>
+      <DialogTrigger>Ban user</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Are you sure absolutely sure?</DialogTitle>
+          <DialogDescription>
+            You are about to ban this user. This action is irreversible.
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(d => {
+          banUser({userId: id, reason: d.reason || undefined})
+        })}>
+          <Textarea {...register("reason")} name="reason" id="reason" />
+          <DialogFooter className="mt-5">
+            <Button variant="ghost">Cancel</Button>
+            <Button type="submit" variant="destructive">Ban</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export const Actions = ({ id }: { id: string }) => {
+  const session = useSession()
+  const [isOpen, setOpen] = useState<true | undefined>(undefined)
+  return (
+    <DropdownMenu open={isOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
@@ -75,11 +122,13 @@ export const Actions = ({ id }: { id: string }) => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem>
-          Copy payment ID
+          <Link href={`/clients/${id}`}>
+            See Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>View customer</DropdownMenuItem>
-        <DropdownMenuItem>View payment details</DropdownMenuItem>
+        <DropdownMenuItem>Match</DropdownMenuItem>
+        {session.data?.user?.role === "ADMIN" && <DropdownMenuItem><BanUserDialog id={id} setOpen={setOpen} /></DropdownMenuItem>}
       </DropdownMenuContent>
     </DropdownMenu>
   )

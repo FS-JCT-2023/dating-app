@@ -78,7 +78,7 @@ export default function ClientSignUp() {
         });
         reset();
       } else {
-        push("/client");
+        push("/dashboard");
       }
     } catch (error) {
       pop({

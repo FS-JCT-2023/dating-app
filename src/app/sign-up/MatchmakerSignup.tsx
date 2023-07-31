@@ -41,18 +41,18 @@ const signUpMatchMakerSchemaMatchmaker = signUpMatchMakerSchema
   });
 
 
-  const MatchmakerForm: FC<MatchmakerFormProps> = ({ onSuccess }) => {
-    const form = useForm<z.infer<typeof signUpMatchMakerSchemaMatchmaker>>({
-      resolver: zodResolver(signUpMatchMakerSchemaMatchmaker),
-    });
-  
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      reset,
-    } = useMemo(() => form, [form]);
- 
+const MatchmakerForm: FC<MatchmakerFormProps> = ({ onSuccess }) => {
+  const form = useForm<z.infer<typeof signUpMatchMakerSchemaMatchmaker>>({
+    resolver: zodResolver(signUpMatchMakerSchemaMatchmaker),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useMemo(() => form, [form]);
+
   const { pop } = usePopper();
 
   const { push } = useRouter();
@@ -60,9 +60,9 @@ const signUpMatchMakerSchemaMatchmaker = signUpMatchMakerSchema
   const onClick = handleSubmit(async (data) => {
     await axios.post("/api/sign-up/matchmaker", data);
     const res = await signIn("credentials", {
-        ...data,
-        callbackUrl: "/",
-        redirect: false,
+      ...data,
+      callbackUrl: "/",
+      redirect: false,
     });
     if (res?.error) {
       pop({
@@ -72,7 +72,7 @@ const signUpMatchMakerSchemaMatchmaker = signUpMatchMakerSchema
       });
       reset();
     } else {
-      push("/matchmaker");
+      push("/dashboard");
       onSuccess();
     }
   });
@@ -85,79 +85,76 @@ const signUpMatchMakerSchemaMatchmaker = signUpMatchMakerSchema
         </CardDescription>
       </CardHeader>
       <form onSubmit={onClick} className="">
-      <CardContent className="grid gap-2 md:grid-cols-2">
-            <div className="space-y-1">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input {...register("firstName")} id="firstName" type="text" />
-              {errors.firstName?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
-                  {errors.firstName?.message.toString()}
-                </Label>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input {...register("lastName")} id="lastName" type="text" />
-              {errors.lastName?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
-                  {errors.lastName?.message.toString()}
-                </Label>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
-              <Input
-                {...register("phoneNumber")}
-                id="phoneNumber"
-                type="text"
-              />
-              {errors.phoneNumber?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
-                  {errors.phoneNumber?.message.toString()}
-                </Label>
-              )}
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
-              <Input {...register("email")} id="email" type="text" />
-              {errors.email?.message && (
-                <Label className="text-xs text-red-600" htmlFor="email">
-                  {errors.email?.message.toString()}
-                </Label>
-              )}
-            </div>
-            <div className="space-y-1 md:col-span-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                {...register("password")}
-                autoComplete="password"
-                id="password"
-                type="password"
-              />
-              {errors.password?.message && (
-                <Label htmlFor="email" className="text-xs text-red-600">
-                  {errors.password?.message.toString()}
-                </Label>
-              )}
-            </div>
-            <div className="space-y-1 md:col-span-2">
-              <Label htmlFor="password">Confirm Password</Label>
-              <Input
-                {...register("confirmPassword")}
-                autoComplete="password"
-                id="confirmPassword"
-                type="password"
-              />
-              {errors.confirmPassword?.message && (
-                <Label htmlFor="password" className="text-xs text-red-600">
-                  {errors.confirmPassword?.message.toString()}
-                </Label>
-              )}
-            </div>
-           
-              
-              
-          </CardContent>
+        <CardContent className="grid gap-2 md:grid-cols-2">
+          <div className="space-y-1">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input {...register("firstName")} id="firstName" type="text" />
+            {errors.firstName?.message && (
+              <Label htmlFor="email" className="text-xs text-red-600">
+                {errors.firstName?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input {...register("lastName")} id="lastName" type="text" />
+            {errors.lastName?.message && (
+              <Label htmlFor="email" className="text-xs text-red-600">
+                {errors.lastName?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="phoneNumber">Phone Number</Label>
+            <Input
+              {...register("phoneNumber")}
+              id="phoneNumber"
+              type="text"
+            />
+            {errors.phoneNumber?.message && (
+              <Label htmlFor="email" className="text-xs text-red-600">
+                {errors.phoneNumber?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="email">Email</Label>
+            <Input {...register("email")} id="email" type="text" />
+            {errors.email?.message && (
+              <Label className="text-xs text-red-600" htmlFor="email">
+                {errors.email?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1 md:col-span-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              {...register("password")}
+              autoComplete="password"
+              id="password"
+              type="password"
+            />
+            {errors.password?.message && (
+              <Label htmlFor="email" className="text-xs text-red-600">
+                {errors.password?.message.toString()}
+              </Label>
+            )}
+          </div>
+          <div className="space-y-1 md:col-span-2">
+            <Label htmlFor="password">Confirm Password</Label>
+            <Input
+              {...register("confirmPassword")}
+              autoComplete="password"
+              id="confirmPassword"
+              type="password"
+            />
+            {errors.confirmPassword?.message && (
+              <Label htmlFor="password" className="text-xs text-red-600">
+                {errors.confirmPassword?.message.toString()}
+              </Label>
+            )}
+          </div>
+        </CardContent>
         <CardContent>
           <Button type="submit">Sign Up</Button>
         </CardContent>

@@ -14,6 +14,7 @@ const filtersSchema = z.object({
   page_size: z.number().max(40).default(20),
   search: z.string().max(255).optional(),
   categories: z.array(z.string().regex(/^("")$/)).optional(),
+  
 
 export const ClientFilters = () => {
   const router = useRouter()
