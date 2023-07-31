@@ -106,17 +106,21 @@ async function ClientDetailsPage({ params }: ClientDetailsPageProps) {
 
       <div className="space-y-3 mt-10">
         <div className="max-w-xl mx-auto">
-          <h3 className="font-light text-xl">Answer to Questions</h3>
-          <Accordion type="single" collapsible className="w-full">
-            {client.answers.map((answer) => (
-              <AccordionItem value={`item-${answer.id}`} key={`q-${answer.id}`}>
-                <AccordionTrigger className='text-md text-left font-normal'>{answer.question.text}</AccordionTrigger>
-                <AccordionContent>
-                  <p className="">&bull; {answer.option?.text}</p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          {client.answers.length &&
+            <>
+              <h3 className="font-light text-xl">Answer to Questions</h3>
+              <Accordion type="single" collapsible className="w-full">
+                {client.answers.map((answer) => (
+                  <AccordionItem value={`item-${answer.id}`} key={`q-${answer.id}`}>
+                    <AccordionTrigger className='text-md text-left font-normal'>{answer.question.text}</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="">&bull; {answer.option?.text}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </>
+          }
         </div>
       </div>
     </div>
