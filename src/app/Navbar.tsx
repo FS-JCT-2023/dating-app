@@ -50,7 +50,7 @@ async function Navbar() {
 
 
   return (
-    <div className="h-16 px-3 flex justify-between items-center shadow shadow-gray-300 bg-gray-200">
+    <div className="h-16 z-50 px-3 flex justify-between items-center shadow shadow-gray-300 bg-gray-200">
       <Image
         src="/black-logo.png"
         width={50}
