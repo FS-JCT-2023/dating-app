@@ -55,6 +55,11 @@ async function ClientPage({ searchParams }: ClientPageProps) {
     },
     skip: page && page_size ? (page - 1) * page_size : undefined,
     take: page_size,
+    orderBy: [
+      {
+        firstName: "asc"
+      }
+    ]
   }) 
 
   return (

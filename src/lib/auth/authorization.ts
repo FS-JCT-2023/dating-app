@@ -22,14 +22,13 @@ export function isAuthorized(user: User, mustBe: Role = "CLIENT"): boolean {
 // get user from db and check if user is authorized
 export async function getAuthorizedUser(
   credentials: Credentials,
-  allData = false
 ): Promise<User | null> {
   const user = await prisma.user.findUnique({
     where: { email: credentials.email || "" },
     include: {
-      admin: allData && credentials.role === "ADMIN",
-      client: allData && credentials.role === "CLIENT",
-      matchmaker: allData && credentials.role === "MATCHMAKER",
+      admin: true,
+      client: true,
+      matchmaker: true,
     },
   });
 

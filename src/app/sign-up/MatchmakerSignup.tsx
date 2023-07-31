@@ -57,7 +57,7 @@ const MatchmakerForm: FC<MatchmakerFormProps> = ({ onSuccess }) => {
 
   const { push } = useRouter();
 
-  const onClick = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data) => {
     await axios.post("/api/sign-up/matchmaker", data);
     const res = await signIn("credentials", {
       ...data,
@@ -84,7 +84,7 @@ const MatchmakerForm: FC<MatchmakerFormProps> = ({ onSuccess }) => {
           Enter your informations and then, click the sign-up button to sign-up.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={onClick} className="">
+      <form onSubmit={onSubmit} className="">
         <CardContent className="grid gap-2 md:grid-cols-2">
           <div className="space-y-1">
             <Label htmlFor="firstName">First Name</Label>
