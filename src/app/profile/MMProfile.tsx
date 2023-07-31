@@ -1,12 +1,6 @@
-import { UserSession } from '@/types'
-import React from 'react'
 
-type MMProfileProps = UserSession
-
-function MMProfile({user}: MMProfileProps) {
-  return (
-    <div>{JSON.stringify(user)}</div>
-  )
+function MMProfile() {
+  return null
 }
 
 export default MMProfile

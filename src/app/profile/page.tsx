@@ -35,7 +35,7 @@ export default async function Profile() {
       <UserDetails user={user} />
       {session.user.role === "ADMIN" && <AdminProfile  />}
       {session.user.role === "CLIENT" && <ClientProfile {...user as User & {client: Client}} />}
-      {session.user.role === "MATCHMAKER" && <MMProfile {...user as User & {matchmaker: Matchmaker}} />}
+      {session.user.role === "MATCHMAKER" && <MMProfile />}
       <ChangePassword />
     </div>
   )
