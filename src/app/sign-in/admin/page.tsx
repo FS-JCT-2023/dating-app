@@ -41,7 +41,6 @@ export default function AdminSignIn() {
       callbackUrl: "/",
       redirect: false,
     });
-    console.log(res);
     if (res?.error) {
       pop({
         type: "error",
@@ -50,7 +49,7 @@ export default function AdminSignIn() {
       });
       reset();
     } else {
-      push("/admin");
+      push("/dashboard");
     }
   });
   return (
